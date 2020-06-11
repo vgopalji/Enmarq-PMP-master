@@ -1,0 +1,306 @@
+﻿@page
+@model CareStream.Web.Pages.Users.CreateUserModel
+@{
+    ViewData["Title"] = "Create User";
+}
+    <div style="padding:5px">
+
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#identity" data-toggle="tab">Identity</a></li>
+            <li><a href="#group" data-toggle="tab" style="padding:50px">Group</a></li>
+            <li><a href="#roles" data-toggle="tab" style="padding:50px">Roles</a></li>
+            <li><a href="#contactinfo" data-toggle="tab" style="padding:50px">Contact Info</a></li>
+            <li><a href="#jobinfo" data-toggle="tab" style="padding:50px">Job Info</a></li>
+            <li><a href="#additionalAttr" data-toggle="tab" style="padding:50px">Additional Attributes</a></li>
+        </ul>
+
+        <form method="post">
+            <div class="tab-content well">
+
+                <div class="tab-pane fade show active" id="identity">
+
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="userModel.SignInName" class="control-label">User ID / Email ID *</label>
+                                <input asp-for="userModel.SignInName" type="email" class="form-control" placeholder="FirstName.Lastname@carestream.com" required />
+                                <span asp-validation-for="userModel.SignInName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="userModel.DisplayName" class="control-label">User Name *</label>
+                                <input asp-for="userModel.DisplayName" class="form-control" placeholder="FirstName LastName" required />
+                                <span asp-validation-for="userModel.DisplayName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="userModel.GivenName" class="control-label">First Name</label>
+                                <input asp-for="userModel.GivenName" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="userModel.Surname" class="control-label">Last Name</label>
+                                <input asp-for="userModel.Surname" class="form-control" />
+                            </div>
+
+                            <h4><strong>Password</strong></h4>
+                            <div class="form-group">
+
+                                <input type="radio" name="password" id="autoPassword" value=true checked="checked" /><label for="autoPassword">Auto-generate password</label><br>
+                                <input type="radio" name="password" id="manualPassword" value=false /><label for="manualPassword">Let me create the password</label><br>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="userModel.Password" class="control-label">Password</label>
+                                @Html.PasswordFor(x => x.userModel.Password)
+                                <br />
+                                <div id="aPassword" class="auto-password-show">
+                                    <div class="row">
+                                        <p class="control-label">
+                                            Use this Password:
+                                            <strong>@Html.LabelFor(x => x.userModel.Password, Model.userModel.Password)</strong>
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <a id="identityNext" class="btn btn-warning pull-right" style="cursor:pointer">Next</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="tab-pane fade" id="group">
+
+
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <br />
+                            <div class="form-group">
+                                <label asp-for="userModel.Groups" class="control-label">Groups</label>
+                                @Html.DropDownListFor(x => x.userModel.Groups, (SelectList)ViewData["Group"], new { style = "width: 250px;", @class = "js-group-multiple", multiple = "multiple" })
+                            </div>
+
+                            <div class="form-group">
+                                <a id="groupBack" class="btn btn-warning" style="cursor:pointer">Back</a>
+                                <a id="groupNext" class="btn btn-warning pull-right" style="cursor:pointer">Next</a>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="tab-pane fade" id="roles">
+                    <div class="col-md-4">
+
+                        <div class="form-group">
+                            <label asp-for="userModel.DelegateAdministration" class="control-label">Delegated Administration</label>
+                            @Html.RadioButtonFor(x => x.userModel.DelegateAdministration, true) Yes
+                            @Html.RadioButtonFor(x => x.userModel.DelegateAdministration, false) No
+
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.RolesAA" class="control-label">Roles & Association</label>
+                            @Html.DropDownListFor(x => x.userModel.RolesAA, (SelectList)ViewData["Roles"], new { style = "width: 250px;", @class = "js-role-multiple", multiple = "multiple" })
+                        </div>
+
+                        <div class="form-group">
+                            <a id="roleBack" class="btn btn-warning" style="cursor:pointer">Back</a>
+                            <a id="roleNext" class="btn btn-warning pull-right" style="cursor:pointer">Next</a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="contactinfo">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="userModel.Address" class="control-label">Address</label>
+                            <input asp-for="userModel.Address" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.Address2" class="control-label">Address 2</label>
+                            <input asp-for="userModel.Address2" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.Address3" class="control-label">Address 3</label>
+                            <input asp-for="userModel.Address3" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.State" class="control-label">State / Province / Subdivision</label>
+                            <input asp-for="userModel.State" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.Country" class="control-label">Country</label>
+                            <input asp-for="userModel.Country" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.Region" class="control-label">Region</label>
+                            <input asp-for="userModel.Region" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.PostalCode" class="control-label">Zip / Postal Code</label>
+                            <input asp-for="userModel.PostalCode" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.MobilePhone" class="control-label">Mobile Number</label>
+                            <input asp-for="userModel.MobilePhone" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.BusinessPhone" class="control-label">Phone Number</label>
+                            <input asp-for="userModel.BusinessPhone" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.BusinessEmail" class="control-label">Business Email</label>
+                            <input asp-for="userModel.BusinessEmail" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.WebSite" class="control-label">WebSite</label>
+                            <input asp-for="userModel.WebSite" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <a id="contactInfoBack" class="btn btn-warning" style="cursor:pointer">Back</a>
+                            <a id="contactInfoNext" class="btn btn-warning pull-right" style="cursor:pointer">Next</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="jobinfo">
+                    <div class="col-md-4">
+
+                        <div class="form-group">
+                            <label asp-for="userModel.JobTitle" class="control-label">Job Title</label>
+                            <input asp-for="userModel.JobTitle" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="userModel.Department" class="control-label">Department</label>
+                            <input asp-for="userModel.Department" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <a id="jobInfoBack" class="btn btn-warning" style="cursor:pointer">Back</a>
+                            <a id="jobInfoNext" class="btn btn-warning pull-right" style="cursor:pointer">Next</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="additionalAttr">
+                    <div class="col-md-4">
+
+                        <div class="form-group">
+                            <label asp-for="userModel.UsageLocation" class="control-label">User Location</label>
+                            @Html.DropDownListFor(x => x.userModel.UsageLocation, (SelectList)ViewData["UserLocation"], new { style = "width: 250px;", @class = "form-control" })
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="userModel.UserTypeAA" class="control-label">User Type</label>
+                            @Html.DropDownListFor(x => x.userModel.UserTypeAA, (SelectList)ViewData["UserType"], new { style = "width: 250px;", @class = "js-usertypes-multiple", multiple = "multiple" })
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="userModel.Language_C" class="control-label">Language</label>
+                            @Html.DropDownListFor(x => x.userModel.Language_C, (SelectList)ViewData["Language"], new { style = "width: 250px;", @class = "form-control" })
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="userModel.UserBusinessDepartmentAA" class="control-label">User Business Department</label>
+                            @Html.DropDownListFor(x => x.userModel.UserBusinessDepartmentAA, (SelectList)ViewData["UserBusDep"], new { style = "width: 250px;", @class = "js-userbusdep-multiple", multiple = "multiple" })
+                        </div>
+
+                        <div class="form-group">
+                            <a id="aaBack" class="btn btn-warning" style="cursor:pointer">Back</a>
+                            <input type="submit" value="Create" class="btn btn-warning" />
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+        </div>
+
+        @section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                $("#autoPassword").click(function () {
+                    $("div.auto-password-show").show();
+                });
+
+                $("#manualPassword").click(function () {
+                    $("div.auto-password-show").hide();
+                });
+
+                /* Multiple Select */
+                $('.js-group-multiple').select2();
+                $('.js-usertypes-multiple').select2();
+                $('.js-role-multiple').select2();
+                $('.js-userbusdep-multiple').select2();
+
+                /*BACK NAVIGATION*/
+                $("#aaBack").click(function () {
+                    $('.nav-tabs a[href="#jobinfo"]').tab('show');
+                });
+
+                $("#jobInfoBack").click(function () {
+                    $('.nav-tabs a[href="#contactinfo"]').tab('show');
+                });
+
+                $("#contactInfoBack").click(function () {
+                    $('.nav-tabs a[href="#roles"]').tab('show');
+                });
+
+                $("#roleBack").click(function () {
+                    $('.nav-tabs a[href="#group"]').tab('show');
+                });
+
+                $("#groupBack").click(function () {
+                    $('.nav-tabs a[href="#identity"]').tab('show');
+                });
+
+                /*NEXT NAVIGATION*/
+                $("#identityNext").click(function () {
+                    $('.nav-tabs a[href="#group"]').tab('show');
+                });
+
+                $("#groupNext").click(function () {
+                    $('.nav-tabs a[href="#roles"]').tab('show');
+                });
+
+                $("#roleNext").click(function () {
+                    $('.nav-tabs a[href="#contactinfo"]').tab('show');
+                });
+
+                $("#contactInfoNext").click(function () {
+                    $('.nav-tabs a[href="#jobinfo"]').tab('show');
+                });
+
+                $("#jobInfoNext").click(function () {
+                    $('.nav-tabs a[href="#additionalAttr"]').tab('show');
+                });
+
+                /**/
+
+            });
+        </script>

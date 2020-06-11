@@ -1,0 +1,78 @@
+﻿@page
+@model CareStream.Web.Pages.Groups.ViewGroupModel
+@{
+    ViewData["Title"] = "ViewGroup";
+}
+
+
+
+    <div class="container-fluid">
+        <h4 class="text-center">@Model.groupModel.DisplayName</h4>
+        <br />
+        <div class="row">
+
+            <div class="col-md-5">
+                <label class="control-label">Membership Type</label>
+            </div>
+            <div class="col-md-7">
+                @if (Model.groupModel.GroupType.Contains("DynamicMembership"))
+                {
+                    <input value="Dynamic" class="form-control" disabled="disabled" />
+                }
+                else
+                {
+                    <input value="Assigned" class="form-control" disabled="disabled" />
+                }
+
+            </div>
+            <br /><br />
+            <div class="col-md-5">
+                <label class="control-label">Source</label>
+            </div>
+            <div class="col-md-7">
+                <input value="" class="form-control" disabled="disabled" />
+            </div>
+
+            <br /><br />
+            <div class="col-md-5">
+                <label asp-for="groupModel.GroupType" class="control-label">Type</label>
+            </div>
+            <div class="col-md-7">
+                <input asp-for="groupModel.GroupType" class="form-control" disabled="disabled" />
+            </div>
+
+            <br /><br />
+            <div class="col-md-5">
+                <label asp-for="groupModel.ObjectId" class="control-label">Object ID</label>
+            </div>
+            <div class="col-md-7">
+                <input asp-for="groupModel.ObjectId" class="form-control" disabled="disabled" />
+            </div>
+
+            <br /><br />
+            <div class="col-md-5">
+                <label asp-for="groupModel.CreatedDateTime" class="control-label">Created Date/Time</label>
+            </div>
+            <div class="col-md-7">
+                <input asp-for="groupModel.CreatedDateTime" class="form-control" disabled="disabled" />
+            </div>
+
+            <div class="col-md-5" style="margin-top:20px">
+                <h5>Direct & Group Members</h5>
+            </div>
+
+            <div class="pane"  style="margin-top:20px">
+                <div class="col-md-9">
+                    <span> <a asp-page="GroupMembers/Index" asp-route-Id="@Model.groupModel.ObjectId">@Model.groupModel.NoOfMembers</a> Users</span>
+                    <span style="margin-left: 20px" > 
+                        <a asp-page="GroupOwners/Index" asp-route-Id="@Model.groupModel.ObjectId">@Model.groupModel.NoOfOwners</a> Owners
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+    @section Scripts{
+        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

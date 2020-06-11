@@ -1,0 +1,104 @@
+﻿@page "{handler?}"
+@model CareStream.Web.Pages.UserAttributes.IndexModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid no-gutter border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" asp-area="" asp-page="CreateUserAttributes"><i class="fa fa-plus pr-2"></i>Create</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" id="deleteUserAttributes" style="cursor:pointer"><i class="fa fa-trash-o pr-2"></i>Delete</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" href="#"><i class="fa fa-cloud-upload pr-2"></i>Import Data</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" href="#"><i class="fa fa-cloud-download pr-2"></i>Export Data</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+@Html.AntiForgeryToken()
+<div class="container-fluid">
+    <table class="table table-striped table-borderless table-hover table-sm table-active table-responsive-sm">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Data Type</th>
+                <th>Description</th>
+                <th>Attribute Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ExtensionModels)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="chkboxUserAtt-@item.ObjectId" id="chkboxUserAtt-@item.ObjectId" data-userattid=@item.ObjectId disabled=@item.IsBuildIn />
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DataType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AttributeType)
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#deleteUserAttributes').on('click', function () {
+
+                var selectedUserAttIds = [];
+                $("input[type='checkbox'][id^='chkboxUserAtt']:checked").each(function () { selectedUserAttIds.push($(this).data("userattid")); })
+
+                $.ajax({
+                    type: "POST",
+                    url: "/userattributes?handler=ExtensionDelete",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: JSON.stringify(selectedUserAttIds),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+                        window.location.reload();
+                    },
+                    failure: function (response) {
+                        alert(response);
+                    }
+                })
+            })
+
+            $('#refersh').on('click', function () {
+                window.location.reload();
+            });
+        });
+    </script>
+}

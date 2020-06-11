@@ -1,0 +1,146 @@
+﻿@page "{handler?}"
+@model CareStream.Web.Pages.Groups.GroupMembers.IndexModel
+@{
+    ViewData["Title"] = "Group Members";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid no-gutter border-bottom">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" id="addMember" onclick="hideShow()" 
+                       style="cursor:pointer">
+                    <i class="fa fa-plus pr-2"></i>Add Member
+                </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" href="#"><i class="fa fa-cloud-upload pr-2"></i>Import Members</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" id="refersh" style="cursor:pointer"><i class="fa fa-refresh pr-2"></i>Refresh</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" id="deleteMembers" style="cursor:pointer"><i class="fa fa-trash-o pr-2"></i>Remove Members</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link pr-2" href="#"><i class="fa fa-cloud-download pr-2"></i>Download Members</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <input type="hidden" id="txtGroupId" value=@Model.GroupId />
+    <div class="col-lg-8">
+        <table class="table table-striped table-borderless table-hover table-sm table-active table-responsive-sm" style="table-layout:fixed">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Name</th>
+                    <th>User Name</th>
+                    <th>Department</th>
+                    <th>Regions</th>
+                    <th>User Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.groupMemberModel.AssignedMembers)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="chkboxMember-@item.Id" id="chkboxMember-@item.Id" data-memberid="@item.Id" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GivenName)  @Html.DisplayFor(modelItem => item.Surname)
+                        </td>
+                        <td style="max-width:100px; word-wrap:break-word">
+                            @Html.DisplayFor(modelItem => item.UserPrincipalName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Department)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Region)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserType)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-4" id="addMemberDiv" style="display:none">
+        <h4>Add Members</h4>
+        <form asp-page-handler="AddMember" asp-route-id=@Model.GroupId  method="post">
+            @foreach (var item in Model.groupMemberModel.Members)
+            {
+                 
+                <ul>
+                    <input type="checkbox" name="selectedMember" id="selectedMember" value="@item.Key" />
+                    <label>@item.Value</label>
+                </ul>
+            }
+            <input type="submit" class="btn btn-success" value="Add Member">
+        </form>
+    </div>
+
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function () {
+
+            $('#refersh').on('click', function () {
+                window.location.reload();
+            });
+
+            $('#deleteMembers').on('click', function () {
+                var selectedMemberIds = [];
+                $("input[type='checkbox'][id^='chkboxMember']:checked").each(function () { selectedMemberIds.push($(this).data("memberid")); })
+
+                var groupId = $('#txtGroupId').val();  
+                $.ajax({
+                    type: "POST",
+                    url: "/groups/groupmembers?handler=GroupMemberDelete",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: JSON.stringify({
+                        GroupId: groupId,
+                        SelectedMembers:selectedMemberIds
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: "json",
+                    cache:false,
+                    success: function (response) {
+                        //alert("Done");
+                        window.location.reload();
+                    },
+                    failure: function (response) {
+                        alert(response);
+                    }
+                })
+            })
+        });
+
+        function hideShow() {
+            var x = document.getElementById("addMemberDiv");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+
+}
